@@ -14,4 +14,4 @@ options={
 	}
 }
 )
-time.sleep(2)
+time.sleep(1)
