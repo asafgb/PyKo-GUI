@@ -1,0 +1,23 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0" is_locked="false">
+    <option name="myName" value="Project Default" />
+    <option name="myLocal" value="false" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <value>
+          <list size="9">
+            <item index="0" class="java.lang.String" itemvalue="code.QDialog" />
+            <item index="1" class="java.lang.String" itemvalue="code.QApplication" />
+            <item index="2" class="java.lang.String" itemvalue="code.QVBoxLayout" />
+            <item index="3" class="java.lang.String" itemvalue="code.QLabel" />
+            <item index="4" class="java.lang.String" itemvalue="code.QLineEdit" />
+            <item index="5" class="java.lang.String" itemvalue="code.QPushButton" />
+            <item index="6" class="java.lang.String" itemvalue="code.QProgressBar" />
+            <item index="7" class="java.lang.String" itemvalue="code.Qt" />
+            <item index="8" class="java.lang.String" itemvalue="werkzeug.cached_property" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
