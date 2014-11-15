@@ -54,7 +54,7 @@ class Application(Frame):
     def downloadSong(self, soup_url):
         link_to_download = ""
         # stream_url = ""
-        source_code2 = requests.get(soup_url, verify=False)
+        source_code2 = requests.get(soup_url, verify=False) # Need a way to include youtube's certificate
         plain_text2 = source_code2.text
         soup2 = BeautifulSoup(plain_text2)
         selected_item = self.lb.get(ACTIVE)
@@ -82,7 +82,7 @@ class Application(Frame):
             ran = s2.replace(" ", "+")
             self.url = "https://www.youtube.com/results?search_query=%s+%s" % (rsn, ran)
             self.slist = list
-            source_code = requests.get(self.url, verify=False)
+            source_code = requests.get(self.url, verify=False) # Need a way to include youtube's certificate
             plain_text = source_code.text
             self.soup = BeautifulSoup(plain_text)
             for SongTitle in self.soup.findAll('a', {'class': 'yt-uix-tile-link yt-ui-ellipsis yt-ui-ellipsis-2 yt-uix-sessionlink     spf-link '}):
