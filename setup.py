@@ -4,7 +4,7 @@ sys.argv.append('py2exe')
 setup(
 name='pykoGUI',
 version='1.0',
-windows=['code.py'],
+windows=['pyko-gui.py'],
 zipfile = None,
 options={
 	"py2exe":{
