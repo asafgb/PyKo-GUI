@@ -27,6 +27,8 @@ from tkMessageBox import *
 import requests, pafy, os
 
 
+
+
 class Application(Frame):
     def __init__(self, master=None):
         self.killDownload = False
@@ -36,7 +38,6 @@ class Application(Frame):
 
     def setFlag(self):
         self.killDownload = True
-
 
     def progressCallback(self, totalBytes, bytesDownloaded, ratio, rate, eta):
         self.progress.config(maximum=totalBytes, value=bytesDownloaded)
@@ -54,7 +55,7 @@ class Application(Frame):
     def downloadSong(self, soup_url):
         link_to_download = ""
         # stream_url = ""
-        source_code2 = requests.get(soup_url, verify=False) # Need a way to include youtube's certificate
+        source_code2 = requests.get(soup_url, verify=False)
         plain_text2 = source_code2.text
         soup2 = BeautifulSoup(plain_text2)
         selected_item = self.lb.get(ACTIVE)
@@ -67,12 +68,38 @@ class Application(Frame):
         best = video.getbest(preftype="mp4")
         best.download(quiet=True, filepath=self.pathName, callback=self.progressCallback)
 
+    def downloadSongList(self, links_list):
+        counter = 1
+        for link in links_list:
+            video = pafy.new(link)
+            best = video.getbest(preftype="mp4")
+            self.label4.config(text="Current song: %s\n\t\t\t   Finished %d / %d" % (video.title, counter, len(links_list)))
+            best.download(quiet=False, filepath=self.pathName, callback=self.progressCallback)
+            counter += 1
 
     def filedialog(self):
         getUser = os.getenv('USERNAME')
         #Need to change this line to support Linux
         self.pathName = askdirectory(initialdir="C:\\Users\\" + getUser + "\\Desktop", title="Where do you want to save the song?")
         self.v.set(self.pathName)
+
+    def fileDialogList(self):
+        getUser = os.getenv('USERNAME')
+        #Need to change this line to support Linux
+        pathName2 = Open(initialdir="C:\\Users\\" + getUser + "\\Desktop", title="Where is the list located?", filetypes=[('text files', '.txt')])
+        fl = pathName2.show()
+        xlist = []
+        if fl != '':
+            with open(fl, 'r') as fin:
+                for line in fin:
+                    xlist.append(line)
+            t = Thread(target=self.downloadSongList, args=(xlist,))
+            t.start()
+
+
+
+
+
 
     def begin_query(self, s1, s2, list):
         if s1 == "" and s2 == "":
@@ -82,7 +109,7 @@ class Application(Frame):
             ran = s2.replace(" ", "+")
             self.url = "https://www.youtube.com/results?search_query=%s+%s" % (rsn, ran)
             self.slist = list
-            source_code = requests.get(self.url, verify=False) # Need a way to include youtube's certificate
+            source_code = requests.get(self.url, verify=False)
             plain_text = source_code.text
             self.soup = BeautifulSoup(plain_text)
             for SongTitle in self.soup.findAll('a', {'class': 'yt-uix-tile-link yt-ui-ellipsis yt-ui-ellipsis-2 yt-uix-sessionlink     spf-link '}):
@@ -97,7 +124,7 @@ class Application(Frame):
         self.label3 = Label(text="")
         self.label3.place(x=120, y=350)
         self.label4 = Label(text="")
-        self.label4.place(x=120, y=370)
+        self.label4.place(x=30, y=370)
 
         entry1 = Entry(width=20)
         entry1.place(x=180, y=6.5)
@@ -122,17 +149,24 @@ class Application(Frame):
         b4 = Button(text="Kill Download", command=self.setFlag)
         b4.place(y=70, x=327)
 
+
         self.lb = Listbox(width=50)
         self.lb.place(x=60, y=100)
 
-        self.scrollbar = Scrollbar(root)
+        self.scrollbar = Scrollbar()
         self.scrollbar.place(x=365, y=100, height=165)
 
         self.lb.config(yscrollcommand=self.scrollbar.set)
         self.scrollbar.config(command=self.lb.yview)
 
         self.progress = Progressbar(orient="horizontal", length=330, mode="determinate")
-        self.progress.place(y=320, x=60)
+        self.progress.place(y=310, x=60)
+
+        menubar=Menu(root)
+        filemenu=Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="File", menu=filemenu)
+        filemenu.add_command(label="Import List",command=self.fileDialogList)
+        root.config(menu=menubar)
 
     def main(self):
         for item in self.slist:
@@ -141,9 +175,10 @@ class Application(Frame):
 
 
 
+
 root = Tk()
+app = Application(master=root)
 root.iconbitmap('icon.ico')
 root.title("PyKo GUI")
 root.geometry("450x450+500+300")
-app = Application(master=root)
 app.mainloop()
